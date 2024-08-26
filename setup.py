@@ -27,7 +27,7 @@ setup(
         "gymnasium",
         "matplotlib",
         "numpy<2.0.0",
-        "opencv_python",
+        "opencv_python<4.3",
         "scikit_image",
         "termcolor",
         "seaborn",

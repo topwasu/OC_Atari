@@ -132,6 +132,7 @@ class OCAtari:
             if mode == "revised":
                 warnings.warn("'revised' mode will deprecate with the next major update, please use 'ram' mode instead.", DeprecationWarning)
             self.max_objects = get_max_objects(self.game_name, self.hud)
+            # print("max", self.max_objects)
             self.detect_objects = self._detect_objects_ram
         elif mode == "both":
             self.detect_objects = self._detect_objects_both

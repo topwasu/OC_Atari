@@ -80,6 +80,8 @@ class PositionHistoryEnv(gym.Env):
     def _obj2vec(self):
         temp_ref_list = self.reference_list.copy()
         for o in self.ocatari_env.objects: # populate out_vector with object instance
+            # print(o.category)
+            # print(temp_ref_list)
             idx = temp_ref_list.index(o.category) #at position of first category occurance
             start = idx * 4
             flat = [item for sublist in o.h_coords for item in sublist]

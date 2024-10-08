@@ -4,9 +4,11 @@ import numpy as np
 
 def get_max_objects(game_name, hud):
     p_module = __name__.split('.')[:-1] + [game_name.lower()]
+    print("p_module", p_module)
     game_module = '.'.join(p_module)
     try:
         mod = sys.modules[game_module]
+        print(mod)
         return mod._get_max_objects(hud)
     except KeyError as err:
         print(colored(f"Game module does not exist: {game_module}", "red"))

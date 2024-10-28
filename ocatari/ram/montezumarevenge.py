@@ -539,9 +539,9 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         objects[28] = Platform(x=124, y=136, w=28, h=2)
         objects[29] = Platform(x=16, y=180, w=128, h=1)
         objects[30] = Wall(x=0, y=96, w=8, h=40)
-        objects[31] = Wall(x=0, y=136, w=16, h=45)
+        objects[31] = Wall(x=0, y=136, w=20, h=45)
         objects[32] = Wall(x=152, y=96, w=8, h=40)
-        objects[33] = Wall(x=144, y=136, w=16, h=45)
+        objects[33] = Wall(x=140, y=136, w=20, h=45)
 
     elif room == 2:
         objects[18] = Platform(x=4, y=93, w=154, h=1)

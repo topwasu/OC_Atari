@@ -120,6 +120,8 @@ class OCAtari:
         self.max_objects = []
         self.buffer_window_size = 4
         self.step = self._step_impl
+        self.order_of_items = ['Ladder', 'Rope', 'Platform', 'Ladder', 'Key', 'Rope', 'Ladder', 'Barrier']
+        self.rewards = [1, 5, 10, 15, 1000, 10, 10, 10]
         if not self._covered_game:
             print(colored("\n\n\tUncovered game !!!!!\n\n", "red"))
             global init_objects
@@ -132,7 +134,6 @@ class OCAtari:
             if mode == "revised":
                 warnings.warn("'revised' mode will deprecate with the next major update, please use 'ram' mode instead.", DeprecationWarning)
             self.max_objects = get_max_objects(self.game_name, self.hud)
-            # print("max", self.max_objects)
             self.detect_objects = self._detect_objects_ram
         elif mode == "both":
             self.detect_objects = self._detect_objects_both
@@ -209,9 +210,21 @@ class OCAtari:
             obs = np.array(self._state_buffer)
         return obs
 
+    def _give_more_reward(self):
+        player = self.objects[0]
+        if len(self.order_of_items) > 0:
+            for obj in self.objects:
+                if obj.category == self.order_of_items[0] and pygame.Rect(player.x, player.y, player.w, player.h).colliderect(pygame.Rect(obj.x, obj.y, obj.w, obj.h)):
+                    self.order_of_items.pop(0)
+                    return self.rewards.pop(0)
+        return 0
     def _step_impl(self, *args, **kwargs):
         obs, reward, terminated, truncated, info = self._env.step(*args, **kwargs)
         self.detect_objects()
+        amount = self._give_more_reward()
+        if amount > 0:
+            print(f"Got {amount} points")
+        reward += amount
         obs = self._post_step(obs)
         return obs, reward, truncated, terminated, info
     

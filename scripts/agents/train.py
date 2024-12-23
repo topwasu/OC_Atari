@@ -59,6 +59,7 @@ def main():
     parser.add_argument("-c", "--cores", type=int, required=True,
                         help="number of envs used")
     parser.add_argument("--rgb", action="store_true", help="rgb observation space")
+    parser.add_argument("--test_mode", action="store_true", help="whether we are just testing")
     opts = parser.parse_args()
 
 
@@ -71,14 +72,18 @@ def main():
     n_eval_envs = 4
     n_eval_episodes = 4
     eval_env_seed = (opts.seed + 42) * 2 #different seeds for eval
-    training_timestamps = 20_000_000
-    checkpoint_frequency = 1_000_000
-    eval_frequency = 500_000
-    rtpt_frequency = 100_000
-    training_timestamps = 2000
-    checkpoint_frequency = 100
-    eval_frequency = 500
-    rtpt_frequency = 100
+    if opts.test_mode:
+        training_timestamps = 2000
+        checkpoint_frequency = 100
+        eval_frequency = 500
+        rtpt_frequency = 100
+    else:
+        training_timestamps = 20_000_000
+        checkpoint_frequency = 1_000_000
+        eval_frequency = 500_000
+        rtpt_frequency = 100_000
+    
+    
     log_path = Path("baseline_logs", exp_name)
     ckpt_path = Path("baseline_checkpoints", exp_name)
     log_path.mkdir(parents=True, exist_ok=True)

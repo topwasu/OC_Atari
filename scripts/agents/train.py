@@ -70,7 +70,7 @@ def main():
     n_envs = opts.cores
     n_eval_envs = 4
     n_eval_episodes = 4
-    eval_env_seed = opts.seed (opts.seed + 42) * 2 #different seeds for eval
+    eval_env_seed = (opts.seed + 42) * 2 #different seeds for eval
     training_timestamps = 20_000_000
     checkpoint_frequency = 1_000_000
     eval_frequency = 500_000

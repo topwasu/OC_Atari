@@ -249,6 +249,29 @@ class Platform(GameObject):
         self.wh = w, h
         self.rgb = 167, 26, 26
         self.hud = False
+        
+        
+class Portal(GameObject):
+    """
+    Permanent portal
+    """
+    
+    def __init__(self, id, x=8, *args, **kwargs):
+        super().__init__()
+        self.id = id
+        self.cat = f"Portal_{id}"
+        self._xy = x, 85
+        self._prev_xy = x, 85
+        self.wh = 1, 40
+        self.rgb = 167, 26, 26
+        self.hud = False
+        
+    def __repr__(self):
+        return f"{self.cat} at ({self._xy[0]}, {self._xy[1]}), {self.wh}"
+
+    @property
+    def category(self):
+        return self.cat
 
 
 class LifeCount(GameObject):
@@ -636,6 +659,17 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             t1.xy = 37, t1.y
         objects[27] = t1
         # import ipdb ipdb.set_trace()
+    
+    lst = [196, 137, 18, 37, 75, 151, 46]
+    
+    try:
+        idx = lst.index(ram_state[1])
+    except:
+        idx = 7
+        
+    
+    objects.append(Portal(idx * 2, 8))
+    objects.append(Portal(idx * 2 + 1, 156))
 
 
 def _detect_objects_pitfall_raw(info, ram_state):

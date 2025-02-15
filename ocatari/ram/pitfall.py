@@ -53,6 +53,19 @@ class Logs(GameObject):
         self.wh = (6, 14)
         self.rgb = 105, 105, 15
         self.hud = False
+        
+        
+class MovingLogs(GameObject):
+    """
+    The moving logs.
+    """
+
+    def __init__(self):
+        super().__init__()
+        self.xy = 0, 0
+        self.wh = (6, 14)
+        self.rgb = 105, 105, 15
+        self.hud = False
 
 
 class StairPit(GameObject):
@@ -146,6 +159,19 @@ class Tarpit(GameObject):
         self.hud = False
 
 
+class DisappearingTarpit(GameObject):
+    """
+    The disappearing tar pits.
+    """
+
+    def __init__(self):
+        super().__init__()
+        self.xy = 0, 0
+        self.wh = (64, 10)
+        self.rgb = 0, 0, 0
+        self.hud = False
+
+
 class Waterhole(GameObject):
     """
     The swamps.
@@ -160,6 +186,32 @@ class Waterhole(GameObject):
 
 
 class Crocodile(GameObject):
+    """
+    The crocodiles.
+    """
+
+    def __init__(self):
+        super().__init__()
+        self.xy = 0, 0
+        self.wh = (8, 8)
+        self.rgb = 20, 60, 0
+        self.hud = False
+        
+        
+class ClosedCrocodile(GameObject):
+    """
+    The crocodiles.
+    """
+
+    def __init__(self):
+        super().__init__()
+        self.xy = 0, 0
+        self.wh = (8, 8)
+        self.rgb = 20, 60, 0
+        self.hud = False
+        
+        
+class OpenCrocodile(GameObject):
     """
     The crocodiles.
     """
@@ -659,17 +711,50 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             t1.xy = 37, t1.y
         objects[27] = t1
         # import ipdb ipdb.set_trace()
+        
+        
+    # Addition objects and semantic changes for the world modeling agent
     
-    lst = [196, 137, 18, 37, 75, 151, 46]
-    
+    # List of ram_state[19] values from first to last room
+    lst = [4, 1, 2, 5, 3, 7, 6]
     try:
-        idx = lst.index(ram_state[1])
+        idx = lst.index(ram_state[19])
     except:
         idx = 7
         
-    
+    # Add portal with id based on room number
     objects.append(Portal(idx * 2, 8))
     objects.append(Portal(idx * 2 + 1, 156))
+    
+    # In some rooms, the logs are moving, so we need new semantics (MovingLogs).
+    if idx < 7 and lst[idx] <= 3:
+        # Replacing logs with moving logs
+        for i in range(2, 5):
+            if objects[i] is None:
+                continue
+            
+            l = MovingLogs()
+            l.xy = objects[i].xy
+            objects[i] = l
+            
+    # In some rooms, the tarpits are disappearing, so we need new semantics (DisappearingTarpit).
+    if ram_state[20] == 5 or ram_state[20] == 6:
+        t = DisappearingTarpit()
+        if objects[12] is not None:
+            t.xy = objects[12].xy
+            t.wh = objects[12].wh
+        else:
+            t.xy = (80, 125)
+            t.wh = (0, 0)
+        objects[12] = t
+        
+    # Add "open"/"closed" semantics to crocodiles
+    if ram_state[20] == 4:
+        for i in range(15, 18):
+            c = OpenCrocodile() if ram_state[46] == 255 else ClosedCrocodile()
+            c.xy = objects[i].xy
+            c.wh = objects[i].wh
+            objects[i] = c
 
 
 def _detect_objects_pitfall_raw(info, ram_state):

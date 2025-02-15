@@ -88,7 +88,7 @@ class Renderer:
 
 
 if __name__ == "__main__":
-    # renderer = Renderer(args.game)
+    renderer = Renderer(args.game)
     # renderer = Renderer("Pitfall")
-    renderer = Renderer("MontezumaRevenge")
+    # renderer = Renderer("MontezumaRevenge")
     renderer.run()

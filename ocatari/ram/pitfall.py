@@ -585,26 +585,38 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         objects[1] = None
         objects[9] = None
 
-    # Implementing Fire,snake and Treasures
-    if ram_state[19] == 6:
+    offset = 0
+    if ram_state[19] == 6 and ram_state[20] == 5 and ram_state[109] != 2:
+        f = GoldenBar()
+        offset = 3
+    elif ram_state[19] == 6 and ram_state[20] != 5:
         f = Fire()
     elif ram_state[19] == 7:
         f = Snake()
 
+
     elif ram_state[19] >= 8:
         if ram_state[19] % 4 == 0:
             f = MoneyBag()
+            offset = 1
         elif ram_state[19] % 4 == 1:
             f = SilverBar()
+            offset = 2
         elif ram_state[19] % 4 == 2:
             f = GoldenBar()
+            offset = 3
         elif ram_state[19] % 4 == 3:
             f = DiamondRing()
+            offset = 4
     else:
         f = None
     if f is not None:
         f.xy = 124, 118
-    objects[11] = f
+    if type(f) is Snake:
+        objects[11+offset] = f
+    else:
+        objects[11+offset] = f
+    
     if objects[15] is None:
         if ram_state[19] == 0 and ram_state[20] != 4:  # bug in pit_10.pkl
             l1 = Logs()
@@ -751,7 +763,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # Add "open"/"closed" semantics to crocodiles
     if ram_state[20] == 4:
         for i in range(15, 18):
-            c = OpenCrocodile() if ram_state[46] == 255 else ClosedCrocodile()
+            if objects[i] is None:
+                continue
+            c = ClosedCrocodile() if ram_state[46] == 255 else OpenCrocodile()
             c.xy = objects[i].xy
             c.wh = objects[i].wh
             objects[i] = c

@@ -443,23 +443,23 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             y+=4
 
         if ram_state[49] == 5:
-            enemy = Skull()
+            enemy = Skull() if enemy is None else enemy
         elif ram_state[49] < 9:
-            enemy = Snake()
+            enemy = Snake() if enemy is None else enemy
             x+=1
         elif ram_state[49] < 11:
-            enemy = Spider()
+            enemy = Spider() if enemy is None else enemy
 
         if ram_state[84]:
             enemy2 = type(enemy)
             if ram_state[84]&1:
-                objects[6] = enemy2()
+                objects[6] = enemy2() if enemy2 is None else enemy2
                 objects[6].xy = x+16, y
             if ram_state[84]&2:
-                objects[6] = enemy2()
+                objects[6] = enemy2() if enemy2 is None else enemy2
                 objects[6].xy = x+32, y
             if ram_state[84]&4:
-                objects[6] = enemy2()
+                objects[6] = enemy2() if enemy2 is None else enemy2
                 objects[6].xy = x+64, y
         else:
             objects[6] = None
@@ -502,7 +502,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     elif room == 1:
         # skull
         if ram_state[67]&2:
-            enemy = Skull()
+            enemy = Skull() if enemy is None else enemy
             enemy.xy = ram_state[47] + 32, 406 - ram_state[46]# ram_state[46] - 74 # 240 -> 166
             objects[5] = enemy
         else:
@@ -562,7 +562,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
 
         # skull
         if ram_state[69]&2:
-            enemy = Skull()
+            enemy = Skull() if enemy is None else enemy
             enemy.xy = ram_state[47] + 33, 103 + (255 - ram_state[46]) 
             objects[5] = enemy
         else:
@@ -771,7 +771,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     elif room ==  18:
         # skull
         if ram_state[76]&32:
-            enemy = Skull()
+            enemy = Skull() if enemy is None else enemy
             enemy.xy = ram_state[47] - 1, ram_state[46] - 147
             objects[5] = enemy
         else:

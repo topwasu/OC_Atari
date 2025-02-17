@@ -446,6 +446,15 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     """
     # There are 8 treasures Define all the classes and at the time of detection replace with GoldenBar index 
     player, = objects[:1]
+    
+    # Top: track all other moving objects too -- how they track velocity is through the .xy setter
+    # Setting xy makes the old xy becomes prev_xy
+    # .dx and .dy are xy - prev_xy
+    l1, l2, l3 = objects[2:5] # logs
+    r = objects[10] # rope
+    s = objects[9] # scorpion
+    
+    
     objects[:] = [None] * 26  # snapshot = pickle.load(open("/home/anurag/Desktop/HiWi_OC/OC_Atari/pit_4.pkl", "rb"))
     # env._env.env.env.ale.restoreState(snapshot)
     player.xy = ram_state[97], ram_state[105] + 72
@@ -571,7 +580,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # Implementing Scorpion
     # Remove scorpion when there is no pit
     if ram_state[29] == 0:
-        s = Scorpion()
+        s = Scorpion() if s is None else s
         s.xy = ram_state[99], (170 if ram_state[65] == 160 else 169)
         s.wh = (7, 8) if ram_state[65] == 160 else (8, 9)
         objects[9] = s
@@ -619,31 +628,31 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     
     if objects[15] is None:
         if ram_state[19] == 0 and ram_state[20] != 4:  # bug in pit_10.pkl
-            l1 = Logs()
+            l1 = Logs() if l1 is None else l1
             l1.xy = (ram_state[98] + 1) % 160, 118
             objects[2] = l1
             objects[3] = None
             objects[4] = None
         elif ram_state[19] == 1:
-            l1 = Logs()
-            l2 = Logs()
+            l1 = Logs() if l1 is None else l1
+            l2 = Logs() if l2 is None else l2
             l1.xy = (ram_state[98] + 1) % 160, 118
             l2.xy = (ram_state[98] + 16 + 1) % 160, 118
             objects[2] = l1
             objects[3] = l2
             objects[4] = None
         elif ram_state[19] == 2:
-            l1 = Logs()
-            l2 = Logs()
+            l1 = Logs() if l1 is None else l1
+            l2 = Logs() if l2 is None else l2
             l1.xy = (ram_state[98] + 1) % 160, 118
             l2.xy = (ram_state[98] + 32 + 1) % 160, 118
             objects[2] = l1
             objects[3] = l2
             objects[4] = None
         elif ram_state[19] == 3:
-            l1 = Logs()
-            l2 = Logs()
-            l3 = Logs()
+            l1 = Logs() if l1 is None else l1
+            l2 = Logs() if l2 is None else l2
+            l3 = Logs() if l3 is None else l3
             l1.xy = ram_state[98] + 1, 119
             l2.xy = (ram_state[98] + 32 + 1) % 160, 118
             l3.xy = (ram_state[98] + 64 + 1) % 160, 118
@@ -651,7 +660,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             objects[3] = l2
             objects[4] = l3
         elif ram_state[19] == 4 and ram_state[20] != 4:
-            l1 = Logs()
+            l1 = Logs() if l1 is None else l1
             l1.xy = (ram_state[98] + 1) % 160, 118
             objects[2] = l1
             objects[3] = None
@@ -677,7 +686,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         rope_visible = True
     # import ipdb ipdb.set_trace()
     if rope_visible:
-        r = Rope()
+        r = Rope() if r is None else r
         r.xy = get_pos_rope(ram_state)
         # r.xy = 78,106
         # if r.xy == (109,96):
@@ -747,6 +756,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             
             l = MovingLogs()
             l.xy = objects[i].xy
+            # Important: track velocity of moving logs correctly
+            l.prev_xy = objects[i].prev_xy
             objects[i] = l
             
     # In some rooms, the tarpits are disappearing, so we need new semantics (DisappearingTarpit).

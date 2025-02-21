@@ -474,7 +474,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     player.xy = ram_state[97], ram_state[105] + 72
     objects[0] = player
 
-    objects[19] = Platform(x=8, y=180, w=152, h=1)
+    objects[19] = Platform(x=8, y=179, w=152, h=1)
 
     # Implementing Pits,waterholes etc
     objects[5:17] = [None] * 12

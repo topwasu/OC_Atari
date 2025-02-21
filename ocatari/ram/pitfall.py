@@ -322,7 +322,7 @@ class Portal(GameObject):
     Permanent portal
     """
     
-    def __init__(self, id, x=8, *args, **kwargs):
+    def __init__(self, id, x=7, *args, **kwargs):
         super().__init__()
         self.id = id
         self.cat = f"Portal_{id}"
@@ -758,7 +758,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         idx = 7
         
     # Add portal with id based on room number
-    objects.append(Portal(idx * 2, 8))
+    objects.append(Portal(idx * 2, 7))
     objects.append(Portal(idx * 2 + 1, 155))
     
     # In some rooms, the logs are moving, so we need new semantics (MovingLogs).

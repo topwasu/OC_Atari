@@ -27,7 +27,7 @@ class Renderer:
 
     def __init__(self, env_name: str):
         self.env = OCAtari(env_name, mode="ram", hud=True, render_mode="human",
-                           render_oc_overlay=True, frameskip=1)
+                           render_oc_overlay=True, frameskip=3)
         # self.env = EasyKangaroo(mode="ram", hud=True, render_mode="human",
         #                    render_oc_overlay=True, frameskip=1)
         self.env.reset()

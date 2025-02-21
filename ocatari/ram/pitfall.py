@@ -303,6 +303,20 @@ class Platform(GameObject):
         self.hud = False
         
         
+class DangerousPlatform(GameObject):
+    """
+    Permanent platforms.
+    """
+    
+    def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
+        super(DangerousPlatform, self).__init__(*args, **kwargs)
+        self._xy = x, y
+        self._prev_xy = x, y
+        self.wh = w, h
+        self.rgb = 167, 26, 26
+        self.hud = False
+        
+        
 class Portal(GameObject):
     """
     Permanent portal
@@ -780,6 +794,15 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             c.xy = objects[i].xy
             c.wh = objects[i].wh
             objects[i] = c
+            
+    # Replace small platforms with one long one
+    for i in range(20, 24):
+        objects[i] = None  
+    objects[20] = Platform(x=8, y=125, w=152, h=1)
+    
+    # Add dangerous platforms in rooms with tarpit / waterhole
+    if objects[12] is not None or objects[13] is not None:
+        objects.append(DangerousPlatform(x=8, y=147, w=152, h=1))
 
 
 def _detect_objects_pitfall_raw(info, ram_state):

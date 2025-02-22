@@ -584,7 +584,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             pit = Tarpit()
             pit.xy = x, int(np.ceil(y)) # Adding ceil makes center stay always at the same place
             pit.wh = w, int(h)
-            print(y, h)
             objects[12] = pit
             objects[20] = Platform(x=8, y=125, w=x-7, h=8)
             objects[21] = Platform(x=x+w, y=125, w=160-(x+w), h=8)

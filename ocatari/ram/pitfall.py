@@ -582,8 +582,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 y-=1
                 h+=2
             pit = Tarpit()
-            pit.xy = x, int(y)
+            pit.xy = x, int(np.ceil(y)) # Adding ceil makes center stay always at the same place
             pit.wh = w, int(h)
+            print(y, h)
             objects[12] = pit
             objects[20] = Platform(x=8, y=125, w=x-7, h=8)
             objects[21] = Platform(x=x+w, y=125, w=160-(x+w), h=8)
@@ -759,7 +760,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         
     # Add portal with id based on room number
     objects.append(Portal(idx * 2, 7))
-    objects.append(Portal(idx * 2 + 1, 155))
+    objects.append(Portal(idx * 2 + 1, 156))
     
     # In some rooms, the logs are moving, so we need new semantics (MovingLogs).
     if idx < 7 and lst[idx] <= 3:

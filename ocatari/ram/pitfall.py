@@ -595,8 +595,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     # Remove scorpion when there is no pit
     if ram_state[29] == 0:
         s = Scorpion() if s is None else s
-        s.xy = ram_state[99], (170 if ram_state[65] == 160 else 169)
-        s.wh = (7, 8) if ram_state[65] == 160 else (8, 9)
+        s.xy = ram_state[99], 169
+        s.wh = (8, 10)
         objects[9] = s
         objects[1] = None
     elif ram_state[29] in [1, 255]:

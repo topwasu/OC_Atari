@@ -759,7 +759,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         
     # Add portal with id based on room number
     objects.append(Portal(idx * 2, 7))
-    objects.append(Portal(idx * 2 + 1, 156))
+    objects.append(Portal(idx * 2 + 1, 155))
     
     # In some rooms, the logs are moving, so we need new semantics (MovingLogs).
     if idx < 7 and lst[idx] <= 3:

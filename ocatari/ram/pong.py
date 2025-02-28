@@ -52,9 +52,23 @@ class Ball(GameObject):
         self.hud = False
         
 
-class Platform(GameObject):
+class Wall(GameObject):
     """
-    Permanent platforms.
+    Permanent walls.
+    """
+    
+    def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._xy = x, y
+        self._prev_xy = x, y
+        self.wh = w, h
+        self.rgb = 167, 26, 26
+        self.hud = False
+        
+
+class Zone(GameObject):
+    """
+    Permanent zones.
     """
     
     def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
@@ -190,12 +204,12 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 
     if len(objects) == 5:
         # side walls
-        objects.append(Platform(5, 29, 155, 5))
-        objects.append(Platform(5, 189+4, 155, 5))
+        objects.append(Wall(5, 29, 155, 5))
+        objects.append(Wall(5, 189+4, 155, 5))
         
         # walls behind player
-        objects.append(Platform(0, 29, 5, 169))
-        objects.append(Platform(155, 29, 5, 169))
+        objects.append(Zone(0, 29, 5, 169))
+        objects.append(Zone(155, 29, 5, 169))
 
 
 def _detect_objects_pong_raw(info, ram_state):

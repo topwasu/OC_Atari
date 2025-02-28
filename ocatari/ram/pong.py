@@ -146,26 +146,26 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     # enemy
     if ram_state[50] > 18:  # otherwise no enemy # could be ram pos 21 as well
-        if ram_state[50] - 15 < 34:
-            enemy.xy = 16, 34
-            enemy.wh = 4, ram_state[50]-33
-        elif ram_state[50] > 194:
-            enemy.xy = 16, ram_state[50]-15
-            enemy.wh = 4, 209 - ram_state[50]
-        else:
-            enemy.xy = 16, ram_state[50]-15
-            enemy.wh = 4, 15
+        # if ram_state[50] - 15 < 34:
+        #     enemy.xy = 16, 34
+        #     enemy.wh = 4, ram_state[50]-33
+        # elif ram_state[50] > 194:
+        #     enemy.xy = 16, ram_state[50]-15
+        #     enemy.wh = 4, 209 - ram_state[50]
+        # else:
+        enemy.xy = 16, ram_state[50]-15
+        enemy.wh = 4, 15
 
-    # player
-    if ram_state[51] - 13 < 34:
-        player.xy = 140, 34
-        player.wh = 4, ram_state[51]-33
-    elif ram_state[51] + 2 > 194:
-        player.xy = 140, ram_state[51]-13
-        player.wh = 4, 207 - ram_state[51]
-    else:
-        player.xy = 140, ram_state[51]-13
-        player.wh = 4, 15
+    # # player
+    # if ram_state[51] - 13 < 34:
+    #     player.xy = 140, 34
+    #     player.wh = 4, ram_state[51]-33
+    # elif ram_state[51] + 2 > 194:
+    #     player.xy = 140, ram_state[51]-13
+    #     player.wh = 4, 207 - ram_state[51]
+    # else:
+    player.xy = 140, ram_state[51]-13
+    player.wh = 4, 15
 
     if hud:
         # enemy score
@@ -189,9 +189,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 player._above_10 = False
                 
     if len(objects) == 5:
-        objects.append(Platform(0, 29, 160, 5))
-        objects.append(Platform(0, 189+4, 160, 5))
+        # side walls
+        objects.append(Platform(5, 29, 155, 5))
+        objects.append(Platform(5, 189+4, 155, 5))
         
+        # walls behind player
         objects.append(Platform(0, 29, 5, 169))
         objects.append(Platform(155, 29, 5, 169))
 

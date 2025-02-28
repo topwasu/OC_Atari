@@ -50,6 +50,20 @@ class Ball(GameObject):
         self.wh = 2, 4
         self.rgb = 236, 236, 236
         self.hud = False
+        
+
+class Platform(GameObject):
+    """
+    Permanent platforms.
+    """
+    
+    def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._xy = x, y
+        self._prev_xy = x, y
+        self.wh = w, h
+        self.rgb = 167, 26, 26
+        self.hud = False
 
 
 class PlayerScore(GameObject):
@@ -173,6 +187,13 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             if player._above_10:
                 objects.remove(PlayerScore(ten=True))
                 player._above_10 = False
+                
+    if len(objects) == 5:
+        objects.append(Platform(0, 29, 160, 5))
+        objects.append(Platform(0, 189+4, 160, 5))
+        
+        objects.append(Platform(0, 29, 5, 169))
+        objects.append(Platform(155, 29, 5, 169))
 
 
 def _detect_objects_pong_raw(info, ram_state):

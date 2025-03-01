@@ -204,8 +204,8 @@ def _detect_objects_ram(objects, ram_state, hud=False):
                 
     if len(objects) == 5:
         # side walls
-        objects.append(Wall(5, 29, 155, 5))
-        objects.append(Wall(5, 189+4, 155, 5))
+        objects.append(Wall(1, 29, 158, 5))
+        objects.append(Wall(1, 189+4, 158, 5))
         
         # walls behind player
         objects.append(Zone(0, 29, 5, 169))

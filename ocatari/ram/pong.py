@@ -155,8 +155,27 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     player, ball, enemy = objects[:3]
 
     # ball
-    if ram_state[54] != 0:  # otherwise no ball
+    if ram_state[54] != 0:
+        # should be a new ball
+        if ball is None:
+            objects[1] = Ball()
+            ball = objects[1]
+            
         ball.xy = ram_state[49]-49, ram_state[54]-14
+    else:
+        objects[1] = None
+        
+    # alternative ball logic if wants the ball to stay around after death
+    # if ball is not None:
+    #     objects[1] = None
+    
+    # if ram_state[54] != 0:
+    #     # should be a new ball
+    #     if ball is None or abs(ram_state[49]-49 - ball.x) > 50:
+    #         objects[1] = Ball()
+    #         ball = objects[1]
+            
+    #     ball.xy = ram_state[49]-49, ram_state[54]-14
 
     # enemy
     if ram_state[50] > 18:  # otherwise no enemy # could be ram pos 21 as well

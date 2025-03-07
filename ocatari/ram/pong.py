@@ -140,7 +140,7 @@ def _init_objects_ram(hud=False):
     """
     (Re)Initialize the objects
     """
-    objects = [Player(), Ball(), Enemy()]
+    objects = [Player(), None, None]
     if hud:
         objects.extend([PlayerScore(), EnemyScore()])
     return objects
@@ -179,6 +179,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     # enemy
     if ram_state[50] > 18:  # otherwise no enemy # could be ram pos 21 as well
+        if enemy is None:
+            objects[2] = Enemy()
+            enemy = objects[2]
         # if ram_state[50] - 15 < 34:
         #     enemy.xy = 16, 34
         #     enemy.wh = 4, ram_state[50]-33
@@ -202,14 +205,15 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     if hud:
         # enemy score
-        if ram_state[13] >= 10:  # enemy score
-            if not enemy._above_10:
-                objects.append(EnemyScore(ten=True))
-                enemy._above_10 = True
-        else:
-            if enemy._above_10:
-                objects.remove(EnemyScore(ten=True))
-                enemy._above_10 = False
+        if enemy is not None:
+            if ram_state[13] >= 10:  # enemy score
+                if not enemy._above_10:
+                    objects.append(EnemyScore(ten=True))
+                    enemy._above_10 = True
+            else:
+                if enemy._above_10:
+                    objects.remove(EnemyScore(ten=True))
+                    enemy._above_10 = False
 
         # player score
         if ram_state[14] >= 10:  # player score

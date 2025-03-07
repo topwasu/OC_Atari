@@ -162,6 +162,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             ball = objects[1]
             
         ball.xy = ram_state[49]-49, ram_state[54]-14
+        
+        if ball.xy[0] < 0:
+            objects[1] = None
     else:
         objects[1] = None
         
@@ -191,6 +194,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         # else:
         enemy.xy = 16, ram_state[50]-15
         enemy.wh = 4, 15
+        
+        if enemy.xy[1] < 10:
+            objects[2] = None
 
     # # player
     # if ram_state[51] - 13 < 34:

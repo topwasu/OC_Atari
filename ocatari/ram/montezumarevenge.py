@@ -507,7 +507,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             objects[5] = enemy
         else:
             # This is not very robust
-            if enemy is not None and abs(ram_state[47] + 32 - enemy.xy[0]) != 1:
+            if enemy is not None and ram_state[2] == 4:
                 objects[5] = None
             else:
                 objects[5] = enemy

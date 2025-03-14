@@ -253,11 +253,17 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     else:
         h = 24  # default
 
-    player.xy = x, y
-    player.wh = 8, h
-    player.orientation = orientation
-    player.climbing = climbing
-    player.crashed = crashed
+    if y == 180:
+        objects[0] = None
+    else:
+        if player is None:
+            player = Player()
+            objects[0] = player
+        player.xy = x, y
+        player.wh = 8, h
+        player.orientation = orientation
+        player.climbing = climbing
+        player.crashed = crashed
 
     child = objects[1]
     # if ram_state[16] > 3 or (ram_state[83] != ram_state[17]):

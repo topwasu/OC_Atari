@@ -7,10 +7,10 @@ RAM extraction for the game Montezuma's Revenge.
 """
 
 MAX_NB_OBJECTS =  {'Player': 1, 'Skull': 1, 'Spider': 1, 'Snake': 2, 'Key': 1, 'Amulet': 1, 'Torch': 1, 'Sword': 1,
-                      'Barrier': 2, 'Beam': 8, 'Rope': 1, 'Ruby': 3}
+                      'Barrier': 2, 'Beam': 8, 'Rope': 1, 'Ruby': 3, 'Platform' : 7,  'Ladder' : 3, 'Conveyer_Belt': 2, 'Wall' : 5}
 MAX_NB_OBJECTS_HUD = {'Player': 1, 'Skull': 2, 'Spider': 1, 'Snake': 2, 'Key': 1, 'Amulet': 1, 'Torch': 1, 'Sword': 1,
                       'Barrier': 2, 'Beam': 8, 'Rope': 1, 'Ruby': 3, 'Key_HUD': 4, 'Amulet_HUD': 1, 'Torch_HUD': 1, 'Sword_HUD': 2,
-                      'Score': 6, 'Life': 5}
+                      'Score': 6, 'Life': 5, 'Platform' : 7,  'Ladder' : 3, 'Conveyer_Belt': 2, 'Wall' : 5}
 obj_tracker = {}
 
 class Player(GameObject):

@@ -7,8 +7,8 @@ RAM extraction for the game Pong.
 
 """
 
-MAX_NB_OBJECTS = {'Player': 1, 'Ball': 1, 'Enemy': 1}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Ball': 1, 'Enemy': 1, 'PlayerScore': 2, 'EnemyScore': 2}
+MAX_NB_OBJECTS = {'Player': 1, 'Ball': 1, 'Enemy': 1, 'Wall': 2, 'Zone': 2}
+MAX_NB_OBJECTS_HUD = {'Player': 1, 'Ball': 1, 'Enemy': 1, 'PlayerScore': 2, 'EnemyScore': 2, 'Wall': 2, 'Zone': 2}
 
 
 class Player(GameObject):

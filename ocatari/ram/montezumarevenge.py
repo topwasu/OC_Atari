@@ -77,7 +77,7 @@ class Key(GameObject):
         super(Key, self).__init__()
         super().__init__(*args, **kwargs)
         self._xy = 89, 166
-        self.wh = 7, 15
+        self.wh = 6, 15
         self.rgb = 232, 204, 99
         self.hud = False
 

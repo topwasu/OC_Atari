@@ -128,7 +128,7 @@ class Rope(GameObject):
     def __init__(self):
         super().__init__()
         self.xy = 0, 0
-        self.wh = (5, 5)
+        self.wh = (1, 1)
         self.rgb = 72, 72, 0
         self.hud = False
 

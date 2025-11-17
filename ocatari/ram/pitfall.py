@@ -322,10 +322,10 @@ class Portal(GameObject):
     Permanent portal
     """
     
-    def __init__(self, id, x=7, *args, **kwargs):
+    def __init__(self, suffix, x=7, *args, **kwargs):
         super().__init__()
-        self.id = id
-        self.cat = f"Portal_{id}"
+        self.suffix = suffix
+        self.cat = f"Portal_{self.suffix}"
         self._xy = x, 85
         self._prev_xy = x, 85
         self.wh = 1, 40
@@ -381,6 +381,20 @@ class Timer(GameObject):
         self.value = 0 # in seconds
         self.hud = True
 
+class RoomNumber(GameObject):
+    """
+    The room number (HUD).
+    """
+    def __init__(self, number):
+        super().__init__()
+        self.cat = f"RoomNumber_{number}"
+        self.xy = 0, 0
+        self.wh = (0, 0)
+        self.rgb = 214, 214, 214
+        
+    @property
+    def category(self):
+        return self.cat
 
 def bcd_to_decimal(bcd):
     decimal_value = 0
@@ -756,10 +770,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         idx = lst.index(ram_state[19])
     except:
         idx = 7
+    objects.append(RoomNumber(idx))
         
     # Add portal with id based on room number
-    objects.append(Portal(idx * 2, 7))
-    objects.append(Portal(idx * 2 + 1, 155))
+    objects.append(Portal('to_prev_room', 7))
+    objects.append(Portal('to_next_room', 155))
     
     # In some rooms, the logs are moving, so we need new semantics (MovingLogs).
     if idx < 7 and lst[idx] <= 3:

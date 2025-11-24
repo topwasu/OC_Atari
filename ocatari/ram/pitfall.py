@@ -13,9 +13,9 @@ RAM extraction for the game Pitfall.
 
 MAX_NB_OBJECTS = {"Player": 1, "Wall": 1, "Logs": 5, "StairPit": 1, "Stair": 1, "Pit": 3, "Scorpion": 1, "Rope": 1, "Snake": 1,
                   "Tarpit": 1, "Waterhole": 1, "Crocodile": 3, "GoldenBar": 1, "Fire": 1, "Platform": 4, 'DisappearingTarpit': 1,
-                  'MovingLogs': 3, 'ClosedCrocodile': 3, 'OpenCrocodile': 3, 'DangerousPlatform': 1, 
+                  'MovingLogs': 3, 'ClosedCrocodile': 3, 'OpenCrocodile': 3, 
                   'Portal_to_prev_room': 1, 'Portal_to_next_room': 1}
-roomnumber_objects = {f'RoomNumber_{i}': 1 for i in range(7)}
+roomnumber_objects = {f'RoomNumber_{i}': 1 for i in range(-1, 7)}
 MAX_NB_OBJECTS_HUD = {**MAX_NB_OBJECTS, "LifeCount": 3, "PlayerScore": 6, "Timer": 5, **roomnumber_objects}
 
 
@@ -299,20 +299,6 @@ class Platform(GameObject):
     
     def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
         super(Platform, self).__init__(*args, **kwargs)
-        self._xy = x, y
-        self._prev_xy = x, y
-        self.wh = w, h
-        self.rgb = 167, 26, 26
-        self.hud = False
-        
-        
-class DangerousPlatform(GameObject):
-    """
-    Permanent platforms.
-    """
-    
-    def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
-        super(DangerousPlatform, self).__init__(*args, **kwargs)
         self._xy = x, y
         self._prev_xy = x, y
         self.wh = w, h
@@ -694,7 +680,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             objects[3] = l2
             objects[4] = l3
         elif ram_state[19] == 4 and ram_state[20] != 4:
-            l1 = Logs() if l1 is None else l1
+            l1 = Logs() if l1 is None or isinstance(l1, MovingLogs) else l1
             l1.xy = (ram_state[98] + 1) % 160, 118
             objects[2] = l1
             objects[3] = None
@@ -770,12 +756,13 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         
     # Addition objects and semantic changes for the world modeling agent
     
-    # List of ram_state[19] values from first to last room
-    lst = [4, 1, 2, 5, 3, 7, 6]
+    # List of ram_state[1] values from first to last room
+    # 225 194 133 11 23 47 (ring) 94 188 120 241 227 198 141 26 52 104 (bag) 208 160 64 128 1 2 4 8 17 35 71 142 28 56 113 226 196 (mid) 137 18 37 75 151 46 (key) 92 184
+    lst = [196, 137, 18, 37, 75, 151, 46]
     try:
-        idx = lst.index(ram_state[19])
+        idx = lst.index(ram_state[1])
     except:
-        idx = 7
+        idx = -1
     objects.append(RoomNumber(idx))
         
     # Add portal with id based on room number
@@ -783,7 +770,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     objects.append(Portal('to_next_room', 155))
     
     # In some rooms, the logs are moving, so we need new semantics (MovingLogs).
-    if idx < 7 and lst[idx] <= 3:
+    if ram_state[19] != 4:
         # Replacing logs with moving logs
         for i in range(2, 5):
             if objects[i] is None:
@@ -820,11 +807,6 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     for i in range(20, 24):
         objects[i] = None  
     objects[20] = Platform(x=8, y=125, w=152, h=1)
-    
-    # Add dangerous platforms in rooms with tarpit / waterhole
-    if objects[12] is not None or objects[13] is not None:
-        objects.append(DangerousPlatform(x=8, y=147, w=152, h=1))
-
 
 def _detect_objects_pitfall_raw(info, ram_state):
     """

@@ -793,20 +793,20 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             t.wh = (0, 0)
         objects[12] = t
         
-    # Add "open"/"closed" semantics to crocodiles
-    if ram_state[20] == 4:
-        for i in range(15, 18):
-            if objects[i] is None:
-                continue
-            c = ClosedCrocodile() if ram_state[46] == 255 else OpenCrocodile()
-            c.xy = objects[i].xy
-            c.wh = objects[i].wh
-            objects[i] = c
+    # # Add "open"/"closed" semantics to crocodiles
+    # if ram_state[20] == 4:
+    #     for i in range(15, 18):
+    #         if objects[i] is None:
+    #             continue
+    #         c = ClosedCrocodile() if ram_state[46] == 255 else OpenCrocodile()
+    #         c.xy = objects[i].xy
+    #         c.wh = objects[i].wh
+    #         objects[i] = c
             
-    # Replace small platforms with one long one
-    for i in range(20, 24):
-        objects[i] = None  
-    objects[20] = Platform(x=8, y=125, w=152, h=1)
+    # # Replace small platforms with one long one
+    # for i in range(20, 24):
+    #     objects[i] = None  
+    # objects[20] = Platform(x=8, y=125, w=152, h=1)
 
 def _detect_objects_pitfall_raw(info, ram_state):
     """

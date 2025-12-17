@@ -317,7 +317,7 @@ class Portal(GameObject):
         self.cat = f"Portal_{self.suffix}"
         self._xy = x, 85
         self._prev_xy = x, 85
-        self.wh = 1, 40
+        self.wh = 3, 40
         self.rgb = 167, 26, 26
         self.hud = False
         
@@ -767,7 +767,7 @@ def _detect_objects_ram(objects, ram_state, hud=False):
         
     # Add portal with id based on room number
     objects.append(Portal('to_prev_room', 7))
-    objects.append(Portal('to_next_room', 155))
+    objects.append(Portal('to_next_room', 153))
     
     # In some rooms, the logs are moving, so we need new semantics (MovingLogs).
     if ram_state[19] != 4:

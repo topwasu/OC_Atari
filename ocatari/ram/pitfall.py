@@ -13,9 +13,9 @@ RAM extraction for the game Pitfall.
 
 MAX_NB_OBJECTS = {"Player": 1, "Wall": 1, "Logs": 5, "StairPit": 1, "Stair": 1, "Pit": 3, "Scorpion": 1, "Rope": 1, "Snake": 1,
                   "Tarpit": 1, "Waterhole": 1, "Crocodile": 3, "GoldenBar": 1, "Fire": 1, "Platform": 4, 'DisappearingTarpit': 1,
-                  'MovingLogs': 3, 'ClosedCrocodile': 3, 'OpenCrocodile': 3, 
+                  'MovingLogs': 3, 'ClosedCrocodile': 3, 'OpenCrocodile': 3, 'DisappearingWaterhole': 1,
                   'Portal_to_prev_room': 1, 'Portal_to_next_room': 1}
-roomnumber_objects = {f'RoomNumber_{i}': 1 for i in range(-1, 7)}
+roomnumber_objects = {f'RoomNumber_{i:+d}': 1 for i in range(-5, 6)}
 MAX_NB_OBJECTS_HUD = {**MAX_NB_OBJECTS, "LifeCount": 3, "PlayerScore": 6, "Timer": 5, **roomnumber_objects}
 
 
@@ -176,6 +176,19 @@ class DisappearingTarpit(GameObject):
 
 
 class Waterhole(GameObject):
+    """
+    The swamps.
+    """
+
+    def __init__(self):
+        super().__init__()
+        self.xy = 0, 0
+        self.wh = (64, 10)
+        self.rgb = 45, 109, 152
+        self.hud = False
+        
+
+class DisappearingWaterhole(GameObject):
     """
     The swamps.
     """
@@ -376,6 +389,8 @@ class RoomNumber(GameObject):
     """
     def __init__(self, number):
         super().__init__()
+        if type(number) is int:
+            number = f"{number:+d}"
         self.cat = f"RoomNumber_{number}"
         self.xy = 0, 0
         self.wh = (0, 0)
@@ -550,17 +565,46 @@ def _detect_objects_ram(objects, ram_state, hud=False):
 
     # Disappearing Waterhole
     elif ram_state[20] == 7:
-        w = Waterhole()
-        if ram_state[32] == 1 and ram_state[33] == 3 and ram_state[34] == 15 and ram_state[35] == 127:
-            w.xy = 52, 121
-            w.wh = (56, 9)
-        if ram_state[32] == 0 and ram_state[33] == 1 and ram_state[34] == 3 and ram_state[35] == 15:
-            w.xy = 48, 120
-            w.wh = (64, 10)
-        if ram_state[32] == 255 and ram_state[33] == 255 and ram_state[34] == 255 and ram_state[35] == 255:
-            objects[13] = None
+        waterhole = Waterhole()
+        # if ram_state[32] == 1 and ram_state[33] == 3 and ram_state[34] == 15 and ram_state[35] == 127:
+        #     w.xy = 52, 121
+        #     w.wh = (56, 9)
+        # if ram_state[32] == 0 and ram_state[33] == 1 and ram_state[34] == 3 and ram_state[35] == 15:
+        #     w.xy = 48, 120
+        #     w.wh = (64, 10)
+        # if ram_state[32] == 255 and ram_state[33] == 255 and ram_state[34] == 255 and ram_state[35] == 255:
+        #     objects[13] = None
+        # else:
+        #     objects[13] = w
+        # Disappearig Tarpit
+        if not ram_state[32]&128:
+            x, y = 76, 125
+            w, h = 8, 0
+            width = [12, 8, 4, 4]
+
+            for i in range(4):
+                if not ram_state[33+i]&128:
+                    x-= width[i]
+                    w+= width[i]*2
+
+            for b in range(8):
+                if not 2**(8-b)&ram_state[32]:
+                    y-=0.5
+                    h+=1
+                else:
+                    break
+            if not ram_state[36]&128:
+                y-=1
+                h+=2
+            waterhole = Waterhole()
+            waterhole.xy = x, int(np.ceil(y)) # Adding ceil makes center stay always at the same place
+            waterhole.wh = w, int(h)
+            objects[13] = waterhole
+            objects[20] = Platform(x=8, y=125, w=x-7, h=8)
+            objects[21] = Platform(x=x+w, y=125, w=160-(x+w), h=8)
         else:
-            objects[13] = w
+            objects[13] = None
+            objects[20] = Platform(x=8, y=125, w=152, h=8)
     elif ram_state[20] == 5 or ram_state[20] == 6:
         t = Tarpit()
         if ram_state[20] == 5:
@@ -758,11 +802,11 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     
     # List of ram_state[1] values from first to last room
     # 225 194 133 11 23 47 (ring) 94 188 120 241 227 198 141 26 52 104 (bag) 208 160 64 128 1 2 4 8 17 35 71 142 28 56 113 226 196 (mid) 137 18 37 75 151 46 (key) 92 184
-    lst = [196, 137, 18, 37, 75, 151, 46]
+    lst = [142, 28, 56, 113, 226, 196, 137, 18, 37, 75, 151]
     try:
-        idx = lst.index(ram_state[1])
+        idx = lst.index(ram_state[1]) - 5
     except:
-        idx = -1
+        idx = 6
     objects.append(RoomNumber(idx))
         
     # Add portal with id based on room number
@@ -792,6 +836,17 @@ def _detect_objects_ram(objects, ram_state, hud=False):
             t.xy = (80, 125)
             t.wh = (0, 0)
         objects[12] = t
+        
+    # In some rooms, the tarpits are disappearing, so we need new semantics (DisappearingWaterhole).
+    if ram_state[20] == 7:
+        t = DisappearingWaterhole()
+        if objects[13] is not None:
+            t.xy = objects[13].xy
+            t.wh = objects[13].wh
+        else:
+            t.xy = (80, 125)
+            t.wh = (0, 0)
+        objects[13] = t
         
     # # Add "open"/"closed" semantics to crocodiles
     # if ram_state[20] == 4:

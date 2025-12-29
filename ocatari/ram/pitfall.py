@@ -13,7 +13,7 @@ RAM extraction for the game Pitfall.
 
 MAX_NB_OBJECTS = {"Player": 1, "Wall": 1, "Logs": 5, "StairPit": 1, "Stair": 1, "Pit": 3, "Scorpion": 1, "Rope": 1, "Snake": 1,
                   "Tarpit": 1, "Waterhole": 1, "Crocodile": 3, "GoldenBar": 1, "Fire": 1, "Platform": 4, 'DisappearingTarpit': 1,
-                  'MovingLogs': 3, 'ClosedCrocodile': 3, 'OpenCrocodile': 3, 'DisappearingWaterhole': 1,
+                  'MovingLogs': 3, 'DisappearingWaterhole': 1,
                   'Portal_to_prev_room': 1, 'Portal_to_next_room': 1}
 roomnumber_objects = {f'RoomNumber_{i:+d}': 1 for i in range(-5, 6)}
 MAX_NB_OBJECTS_HUD = {**MAX_NB_OBJECTS, "LifeCount": 3, "PlayerScore": 6, "Timer": 5, **roomnumber_objects}

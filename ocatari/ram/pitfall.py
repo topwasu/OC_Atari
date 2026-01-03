@@ -805,9 +805,9 @@ def _detect_objects_ram(objects, ram_state, hud=False):
     lst = [142, 28, 56, 113, 226, 196, 137, 18, 37, 75, 151]
     try:
         idx = lst.index(ram_state[1]) - 5
+        objects.append(RoomNumber(idx))
     except:
-        idx = 6
-    objects.append(RoomNumber(idx))
+        objects.append(None)
         
     # Add portal with id based on room number
     objects.append(Portal('to_prev_room', 7))

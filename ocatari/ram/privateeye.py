@@ -458,6 +458,11 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     player._xy = ram_state[63], 150 - ram_state[97]
     
     car = objects[1]
+    
+    objects[:] = [None] * 10
+    objects[0] = player
+    objects[1] = car
+    
     if ram_state[58] == 1 or ram_state[58] == 5:
         car_x = ram_state[63]
         player.orientation = 2
@@ -680,7 +685,6 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         clock.value = _convert_number(ram_state[67])*60 + _convert_number(ram_state[69])
         
     # Addition objects and semantic changes for the world modeling agent
-    objects = objects[:10]
     
     # List of ram_state[1] values from first to last room
     idx = int(ram_state[92]) if ram_state[92] < 16 else int(ram_state[92]) - 32

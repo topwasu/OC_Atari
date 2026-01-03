@@ -682,7 +682,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
     # Addition objects and semantic changes for the world modeling agent
     
     # List of ram_state[1] values from first to last room
-    idx = ram_state[92] if ram_state[92] < 16 else ram_state[92] - 32
+    idx = int(ram_state[92]) if ram_state[92] < 16 else int(ram_state[92]) - 32
     objects.append(RoomNumber(idx))
         
     # Add portal with id based on room number

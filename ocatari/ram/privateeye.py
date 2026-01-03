@@ -7,8 +7,9 @@ RAM extraction for the game PrivateEye. Supported modes: ram.
 
 """
 
-MAX_NB_OBJECTS =  {'Player': 1, 'Car': 1}
-MAX_NB_OBJECTS_HUD = {'Player': 1, 'Car': 1, 'Score': 1, 'Clock': 1}
+MAX_NB_OBJECTS =  {'Player': 1, 'Car': 1, 'Passge': 1, 'Clue': 1, 'Mud': 1, 'PottetPlant': 2, 'Brick': 2, 'Lizard': 1, 'Dove': 1, 'Barrier': 1}
+roomnumber_objects = {f'RoomNumber_{i:+d}': 1 for i in range(-5, 6)}
+MAX_NB_OBJECTS_HUD = {**MAX_NB_OBJECTS, 'Score': 1, 'Clock': 1, **roomnumber_objects}
 obj_tracker = {}
 
 class Player(GameObject):
@@ -74,13 +75,13 @@ class Mud(GameObject):
         self.hud = False
 
 
-class Shatterd_Object(GameObject):
+class ShatterdObject(GameObject):
     """
     The animation for broken bricks or flowerpots once they've hit the ground.
     """
     
     def __init__(self):
-        super(Shatterd_Object, self).__init__()
+        super(ShatterdObject, self).__init__()
         self._xy = 0, 0
         self.wh = 8, 4
         self.rgb = 0, 0, 0
@@ -125,13 +126,13 @@ class Lizard(GameObject):
         self.hud = False
 
 
-class Pottet_Plant(GameObject):
+class PottetPlant(GameObject):
     """
     The flowerpots thrown from windows.
     """
     
     def __init__(self):
-        super(Pottet_Plant, self).__init__()
+        super(PottetPlant, self).__init__()
         self._xy = 0, 0
         self.wh = 6, 16
         self.rgb = 110, 156, 66
@@ -178,52 +179,52 @@ class Passge(GameObject):
         self.hud = False
 
 
-class Gun_Sign(GameObject):
+class GunSign(GameObject):
     """
     The header of the gunstore.
     """
     
     def __init__(self):
-        super(Gun_Sign, self).__init__()
+        super(GunSign, self).__init__()
         self._xy = 0, 0
         self.wh = 8, 4
         self.rgb = 252, 252, 84
         self.hud = False
 
 
-class Police_Sign(GameObject):
+class PoliceSign(GameObject):
     """
     The header of the police headquaters.
     """
     
     def __init__(self):
-        super(Police_Sign, self).__init__()
+        super(PoliceSign, self).__init__()
         self._xy = 0, 0
         self.wh = 8, 4
         self.rgb = 0, 0, 0
         self.hud = False
 
 
-class Bank_Sign(GameObject):
+class BankSign(GameObject):
     """
     The header of the bank building.
     """
     
     def __init__(self):
-        super(Police_Sign, self).__init__()
+        super(BankSign, self).__init__()
         self._xy = 0, 0
         self.wh = 8, 4
         self.rgb = 82, 126, 45
         self.hud = False
 
 
-class Money_Bag(GameObject):
+class MoneyBag(GameObject):
     """
     The inventory display for the bag of stolen money (case 1).
     """
     
     def __init__(self):
-        super(Money_Bag, self).__init__()
+        super(MoneyBag, self).__init__()
         self._xy = 0, 0
         self.wh = 7, 11
         self.rgb = 236, 236, 236
@@ -269,13 +270,13 @@ class Comb(GameObject):
         self.hud = False
 
 
-class Shoe_Sole(GameObject):
+class ShoeSole(GameObject):
     """
     The inventory display for the shoe sole (case 4).
     """
     
     def __init__(self):
-        super(Shoe_Sole, self).__init__()
+        super(ShoeSole, self).__init__()
         self._xy = 0, 0
         self.wh = 8, 11
         self.rgb = 0, 0, 0
@@ -321,13 +322,13 @@ class Stamp(GameObject):
         self.hud = False
 
 
-class Badguy_Head(GameObject):
+class BadguyHead(GameObject):
     """
     The thugs lurching out to attack the player.
     """
     
     def __init__(self):
-        super(Badguy_Head, self).__init__()
+        super(BadguyHead, self).__init__()
         self._xy = 0, 0
         self.wh = 8, 7
         self.rgb = 24, 26, 167
@@ -358,17 +359,74 @@ class Clock(ValueObject):
         self.wh = 7, 5
         self.rgb = 236, 236, 236
         self.hud = True
+        
+        
+class RoomNumber(GameObject):
+    """
+    The room number (HUD).
+    """
+    def __init__(self, number):
+        super().__init__()
+        if type(number) is int:
+            number = f"{number:+d}"
+        self.cat = f"RoomNumber_{number}"
+        self.xy = 0, 0
+        self.wh = (0, 0)
+        self.rgb = 214, 214, 214
+        
+    @property
+    def category(self):
+        return self.cat
+    
+    
+class Portal(GameObject):
+    """
+    Permanent portal
+    """
+    
+    def __init__(self, suffix, x=8, *args, **kwargs):
+        super().__init__()
+        self.suffix = suffix
+        self.cat = f"Portal_{self.suffix}"
+        self._xy = x, 27
+        self._prev_xy = x, 27
+        self.wh = 5, 150
+        self.rgb = 167, 26, 26
+        self.hud = False
+        
+    def __repr__(self):
+        return f"{self.cat} at ({self._xy[0]}, {self._xy[1]}), {self.wh}"
+
+    @property
+    def category(self):
+        return self.cat
+    
+    
+class Platform(GameObject):
+    """
+    Permanent platforms.
+    """
+    
+    def __init__(self, x=0, y=0, w=8, h=4, *args, **kwargs):
+        super(Platform, self).__init__(*args, **kwargs)
+        self._xy = x, y
+        self._prev_xy = x, y
+        self.wh = w, h
+        self.rgb = 167, 26, 26
+        self.hud = False
 
 
 # parses MAX_NB* dicts, returns default init list of objects
 def _get_max_objects(hud=False):
-
     def fromdict(max_obj_dict):
         objects = []
         mod = sys.modules[__name__]
         for k, v in max_obj_dict.items():
             for _ in range(0, v):
-                objects.append(getattr(mod, k)())    
+                if '_' in k:
+                    objects.append(getattr(mod, k.split('_')[0])(k.split('_')[1]))
+                else:
+                    objects.append(getattr(mod, k)())
         return objects
 
     if hud:
@@ -443,11 +501,11 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             obj = Barrier()
             obj.xy = 15 + ram_state[47], 165 - ram_state[38]
         elif ram_state[41] == 3:
-            obj = Pottet_Plant()
+            obj = PottetPlant()
             x = 15 + ram_state[47]
             obj.xy = x, 167 - ram_state[38]
             if ram_state[44]:
-                obj2 = Pottet_Plant()
+                obj2 = PottetPlant()
                 obj2.xy = x + 16*ram_state[44], 167 - ram_state[38]
                 objects[4] = obj2
             else:
@@ -469,11 +527,11 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             obj = Mud()
             obj.xy = 15 + ram_state[47], 179 - ram_state[38]
         elif ram_state[41] == 11 or ram_state[41] == 12 or ram_state[41] == 13:
-            obj = Shatterd_Object()
+            obj = ShatterdObject()
             x = 15 + ram_state[47]
             obj.xy = x, 179 - ram_state[38]
             if ram_state[44]:
-                obj2 = Shatterd_Object()
+                obj2 = ShatterdObject()
                 obj2.xy = x + 16*ram_state[44], 179 - ram_state[38]
                 objects[4] = obj2
             else:
@@ -485,7 +543,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             obj = Lizard()
             obj.xy = 15 + ram_state[47], 179 - ram_state[38]
         elif ram_state[41] == 29:
-            obj = Badguy_Head()
+            obj = BadguyHead()
             obj.xy = 15 + ram_state[47], 177 - ram_state[38]
         elif ram_state[41] == 32:
             obj = Knife()
@@ -504,11 +562,11 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             obj = Barrier()
             obj.xy = 15 + ram_state[48], 165 - ram_state[39]
         elif ram_state[42] == 3:
-            obj = Pottet_Plant()
+            obj = PottetPlant()
             x = 15 + ram_state[48]
             obj.xy = x, 167 - ram_state[39]
             if ram_state[44]:
-                obj2 = Pottet_Plant()
+                obj2 = PottetPlant()
                 obj2.xy = x + 16*ram_state[44], 167 - ram_state[39]
                 objects[5] = obj2
             else:
@@ -527,11 +585,11 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             obj = Mud()
             obj.xy = 15 + ram_state[48], 179 - ram_state[39]
         elif ram_state[42] == 11 or ram_state[42] == 12 or ram_state[42] == 13:
-            obj = Shatterd_Object()
+            obj = ShatterdObject()
             x = 15 + ram_state[48]
             obj.xy = x, 179 - ram_state[39]
             if ram_state[44]:
-                obj2 = Shatterd_Object()
+                obj2 = ShatterdObject()
                 obj2.xy = x + 16*ram_state[44], 179 - ram_state[38]
                 objects[5] = obj2
             else:
@@ -543,7 +601,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             obj = Lizard()
             obj.xy = 15 + ram_state[48], 179 - ram_state[39]
         elif ram_state[42] == 29:
-            obj = Badguy_Head()
+            obj = BadguyHead()
             obj.xy = 15 + ram_state[48], 177 - ram_state[39]
         elif ram_state[42] == 32:
             obj = Knife()
@@ -575,9 +633,9 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         elif ram_state[60] == 22:
             obj = Comb()
         elif ram_state[60] == 23:
-            obj = Shoe_Sole()
+            obj = ShoeSole()
         elif ram_state[60] == 24:
-            obj = Money_Bag()
+            obj = MoneyBag()
         elif ram_state[60] == 25:
             obj = Vase()
         elif ram_state[60] == 26:
@@ -585,7 +643,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         elif ram_state[60] == 27:
             obj = Stamp()
         elif ram_state[60] == 29 or ram_state[60] == 30:
-            obj = Badguy_Head()
+            obj = BadguyHead()
         objects[7] = obj
         if obj is not None:
             obj.xy = x, 45-obj.h
@@ -620,6 +678,17 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         clock.xy = 67, 19
         clock.wh = 30, 8
         clock.value = _convert_number(ram_state[67])*60 + _convert_number(ram_state[69])
+        
+    # Addition objects and semantic changes for the world modeling agent
+    
+    # List of ram_state[1] values from first to last room
+    idx = ram_state[92] if ram_state[92] < 16 else ram_state[92] - 32
+    objects.append(RoomNumber(idx))
+        
+    # Add portal with id based on room number
+    objects.append(Portal('to_prev_room', 8))
+    objects.append(Portal('to_next_room', 155))
+    objects.append(Platform(x=8, y=177, w=147 + 5, h=1))
 
     return objects
 

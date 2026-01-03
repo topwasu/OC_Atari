@@ -75,17 +75,17 @@ class Mud(GameObject):
         self.hud = False
 
 
-class ShatterdObject(GameObject):
-    """
-    The animation for broken bricks or flowerpots once they've hit the ground.
-    """
+# class ShatterdObject(GameObject):
+#     """
+#     The animation for broken bricks or flowerpots once they've hit the ground.
+#     """
     
-    def __init__(self):
-        super(ShatterdObject, self).__init__()
-        self._xy = 0, 0
-        self.wh = 8, 4
-        self.rgb = 0, 0, 0
-        self.hud = False
+#     def __init__(self):
+#         super(ShatterdObject, self).__init__()
+#         self._xy = 0, 0
+#         self.wh = 8, 4
+#         self.rgb = 0, 0, 0
+#         self.hud = False
 
 
 class Knife(GameObject):
@@ -532,15 +532,17 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             obj = Mud()
             obj.xy = 15 + ram_state[47], 179 - ram_state[38]
         elif ram_state[41] == 11 or ram_state[41] == 12 or ram_state[41] == 13:
-            obj = ShatterdObject()
-            x = 15 + ram_state[47]
-            obj.xy = x, 179 - ram_state[38]
-            if ram_state[44]:
-                obj2 = ShatterdObject()
-                obj2.xy = x + 16*ram_state[44], 179 - ram_state[38]
-                objects[4] = obj2
-            else:
-                objects[4] = None
+            obj = None
+            pass
+            # obj = ShatterdObject()
+            # x = 15 + ram_state[47]
+            # obj.xy = x, 179 - ram_state[38]
+            # if ram_state[44]:
+            #     obj2 = ShatterdObject()
+            #     obj2.xy = x + 16*ram_state[44], 179 - ram_state[38]
+            #     objects[4] = obj2
+            # else:
+            #     objects[4] = None
         elif ram_state[41] == 14 or ram_state[41] == 15:
             obj = Dove()
             obj.xy = 15 + ram_state[47], 177 - ram_state[38]
@@ -590,15 +592,17 @@ def _detect_objects_ram(objects, ram_state, hud=True):
             obj = Mud()
             obj.xy = 15 + ram_state[48], 179 - ram_state[39]
         elif ram_state[42] == 11 or ram_state[42] == 12 or ram_state[42] == 13:
-            obj = ShatterdObject()
-            x = 15 + ram_state[48]
-            obj.xy = x, 179 - ram_state[39]
-            if ram_state[44]:
-                obj2 = ShatterdObject()
-                obj2.xy = x + 16*ram_state[44], 179 - ram_state[38]
-                objects[5] = obj2
-            else:
-                objects[4] = None
+            obj = None
+            pass
+            # obj = ShatterdObject()
+            # x = 15 + ram_state[48]
+            # obj.xy = x, 179 - ram_state[39]
+            # if ram_state[44]:
+            #     obj2 = ShatterdObject()
+            #     obj2.xy = x + 16*ram_state[44], 179 - ram_state[38]
+            #     objects[5] = obj2
+            # else:
+            #     objects[4] = None
         elif ram_state[42] == 14 or ram_state[42] == 15:
             obj = Dove()
             obj.xy = 15 + ram_state[48], 177 - ram_state[39]

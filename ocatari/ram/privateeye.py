@@ -680,6 +680,7 @@ def _detect_objects_ram(objects, ram_state, hud=True):
         clock.value = _convert_number(ram_state[67])*60 + _convert_number(ram_state[69])
         
     # Addition objects and semantic changes for the world modeling agent
+    objects = objects[:10]
     
     # List of ram_state[1] values from first to last room
     idx = int(ram_state[92]) if ram_state[92] < 16 else int(ram_state[92]) - 32

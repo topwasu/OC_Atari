@@ -7,7 +7,7 @@ RAM extraction for the game PrivateEye. Supported modes: ram.
 
 """
 
-MAX_NB_OBJECTS =  {'Player': 1, 'Car': 1, 'Passge': 1, 'Clue': 1, 'Mud': 1, 'PottetPlant': 2, 'Brick': 2, 'Lizard': 1, 'Dove': 1, 'Barrier': 1}
+MAX_NB_OBJECTS =  {'Player': 1, 'Car': 1, 'Passge': 1, 'Clue': 1, 'Mud': 1, 'PottetPlant': 2, 'Brick': 2, 'Lizard': 1, 'Dove': 1, 'Barrier': 1, 'Portal_to_prev_room': 1, 'Portal_to_next_room': 1, 'Platform': 1}
 roomnumber_objects = {f'RoomNumber_{i:+d}': 1 for i in range(-5, 6)}
 MAX_NB_OBJECTS_HUD = {**MAX_NB_OBJECTS, 'Score': 1, 'Clock': 1, **roomnumber_objects}
 obj_tracker = {}
